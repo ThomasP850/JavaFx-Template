@@ -21,14 +21,15 @@ public class Controller {
     private NumberAxis xAxis;
     @FXML
     private NumberAxis yAxis;
-    private TimeSeriesDailyResponseData data;
 
+    /**
+     * Send data to the line chart
+     * <p>
+     * This clears any previous data that was on the chart.
+     * 
+     * @param data The data to send
+     */
     public void sendTimeSeriesData(TimeSeriesDailyResponseData data) {
-        this.data = data;
-        updateChart();
-    }
-
-    private void updateChart() {
         lineChart.setTitle(data.getMetaData().getSymbol() + " Daily Closing Prices");
 
         Calendar monthAgo = new GregorianCalendar();
@@ -53,7 +54,4 @@ public class Controller {
         lineChart.getData().removeAll(lineChart.getData());
         lineChart.getData().add(dataPoints);
     }
-
-
-
 }

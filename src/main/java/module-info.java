@@ -1,5 +1,5 @@
 module data.visualization.workshop.javafxtemplate {
-    requires javafx.controls;
+    requires transitive javafx.controls;
     requires javafx.fxml;
     requires com.google.gson;
     requires java.net.http;
