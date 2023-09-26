@@ -25,7 +25,6 @@ public class Controller {
 
     public void sendTimeSeriesData(TimeSeriesDailyResponseData data) {
         this.data = data;
-//        outputLabel.setText(data.getTimeSeriesDaily().values().toArray(new TimeSeriesDailyResponseData.DataPoint[data.getTimeSeriesDaily().size()])[0].getClose() + "");
         updateChart();
     }
 
@@ -35,25 +34,23 @@ public class Controller {
         Calendar monthAgo = new GregorianCalendar();
         monthAgo.set(Calendar.DAY_OF_MONTH, 1);
 
-        XYChart.Series dataPoints = new XYChart.Series();
+        XYChart.Series<Integer, Double> dataPoints = new XYChart.Series<Integer, Double>();
 
-        double minVal = data.getTimeSeriesDaily().values().stream().map(e -> e.getClose()).min(Double::compare).get();
-        double maxVal = data.getTimeSeriesDaily().values().stream().map(e -> e.getClose()).max(Double::compare).get();
-
-        yAxis.setAutoRanging(false);
-        yAxis.setLowerBound(minVal);
-        yAxis.setUpperBound(maxVal);
-
+        
         data.getTimeSeriesDaily().forEach((Date day, TimeSeriesDailyResponseData.DataPoint dPoint) -> {
             int elapsedDays = (int)ChronoUnit.DAYS.between(monthAgo.toInstant(), day.toInstant());
-            // Exlude days that are before this month.
+            // Exclude days that are before this month.
             if(elapsedDays >= 0) {
                 double closeVal = dPoint.getClose();
-                dataPoints.getData().add(new XYChart.Data(elapsedDays, closeVal));
+                dataPoints.getData().add(new XYChart.Data<Integer, Double>(elapsedDays, closeVal));
             }
         });
 
-        lineChart.getData().removeAll();
+        yAxis.setAutoRanging(false);
+        yAxis.setLowerBound(dataPoints.getData().stream().mapToDouble(d -> d.getYValue()).min().getAsDouble());
+        yAxis.setUpperBound(dataPoints.getData().stream().mapToDouble(d -> d.getYValue()).max().getAsDouble());
+
+        lineChart.getData().removeAll(lineChart.getData());
         lineChart.getData().add(dataPoints);
     }
 
