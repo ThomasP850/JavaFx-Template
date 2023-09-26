@@ -24,8 +24,7 @@ public class Application extends javafx.application.Application {
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
         stage.setTitle("Finance Data");
         stage.setScene(scene);
-        stage.show();
-
+        
         try {
             TimeSeriesDailyResponseData data = getDailyFinanceData("TSLA");
             fxmlLoader.<Controller>getController().sendTimeSeriesData(data);
@@ -33,6 +32,8 @@ public class Application extends javafx.application.Application {
             System.out.println("!!! Error fetching data !!!");
             ex.printStackTrace();
         }
+        
+        stage.show();
     }
 
     public static void main(String[] args) {
